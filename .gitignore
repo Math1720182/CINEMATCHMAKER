@@ -1,0 +1,98 @@
+# Environment Variables
+.env
+.env.local
+.env.*.local
+.env.production.local
+.env.test.local
+
+# Secrets & Credentials
+secrets.toml
+*.pem
+*.key
+*.crt
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# Data Files (sensitive)
+*.csv
+*.xlsx
+*.xls
+data/ratings.csv
+data/ratings_augmented.csv
+data/hello.csv
+data/df_merged_scrapped.csv
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Misc
+.cache/
+*.bak
+*.tmp
+node_modules/
