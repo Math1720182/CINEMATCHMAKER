@@ -234,21 +234,32 @@ def login_with_google(google_sub):
     cur.close()
     conn.close()
 
+def is_user_logged_in():
+    return st.user is not None and getattr(st.user, "is_logged_in", False)
+
 if "mode_dialog" not in st.session_state:
     st.session_state.mode_dialog = "login"
 
 def get_user_avatar(): #Sometimes, st.user.picture is blocked by Google and no image is loading (CORS)
-    if st.user.is_logged_in:
-        response = requests.get(st.user.picture, timeout = 5)
-        if response.status_code == 200:
-            return response.content
-    else:
-        return "🐻"
+
+    if hasattr(st, "user") and getattr(st.user, "is_logged_in", False):
+        picture_url = st.user.get("picture") or st.user.get("avatar_url")
+        
+        if picture_url:
+            try:
+                response = requests.get(picture_url, timeout=5)
+                if response.status_code == 200:
+                    return response.content
+            except Exception:
+                pass
+                
+    # Fallback par défaut si non connecté ou si la requête échoue
+    return "🐻"
 
 user_avatar = get_user_avatar()
 
-if st.user.is_logged_in:
-    login_with_google(st.user['sub'])
+if is_user_logged_in():
+    login_with_google(st.user["sub"])
 
 
 @st.dialog("Log in or sign up", width="small")
