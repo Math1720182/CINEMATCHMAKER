@@ -234,7 +234,6 @@ def login_with_google(google_sub):
     cur.close()
     conn.close()
 
-
 if "mode_dialog" not in st.session_state:
     st.session_state.mode_dialog = "login"
 
