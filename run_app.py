@@ -234,32 +234,22 @@ def login_with_google(google_sub):
     cur.close()
     conn.close()
 
-def is_user_logged_in():
-    return st.user is not None and getattr(st.user, "is_logged_in", False)
 
 if "mode_dialog" not in st.session_state:
     st.session_state.mode_dialog = "login"
 
 def get_user_avatar(): #Sometimes, st.user.picture is blocked by Google and no image is loading (CORS)
-
-    if hasattr(st, "user") and getattr(st.user, "is_logged_in", False):
-        picture_url = st.user.get("picture") or st.user.get("avatar_url")
-        
-        if picture_url:
-            try:
-                response = requests.get(picture_url, timeout=5)
-                if response.status_code == 200:
-                    return response.content
-            except Exception:
-                pass
-                
-    # Fallback par défaut si non connecté ou si la requête échoue
-    return "🐻"
+    if st.user and st.user.get("is_logged_in", False):
+        response = requests.get(st.user.picture, timeout = 5)
+        if response.status_code == 200:
+            return response.content
+    else:
+        return "🐻"
 
 user_avatar = get_user_avatar()
 
-if is_user_logged_in():
-    login_with_google(st.user["sub"])
+if st.user and st.user.get("is_logged_in", False):
+    login_with_google(st.user['sub'])
 
 
 @st.dialog("Log in or sign up", width="small")
@@ -331,7 +321,7 @@ def login_page():
             st.session_state.mode_dialog = "login"
  
 
-if st.user.is_logged_in and st.session_state["user"] is None:
+if st.user and st.user.get("is_logged_in", False) and st.session_state["user"] is None:
     st.session_state["user"] = st.user
     st.rerun()
             
@@ -340,7 +330,7 @@ with st.sidebar:
         if st.button("**Log in**", type = 'primary', key = "sign_in", width = 300):
             login_page()
     else:
-        if not st.user.is_logged_in:
+        if not st.user and st.user.get("is_logged_in", False):
             st.write(f"Welcome **{st.session_state["user"]["username"]}**")
         else:
             st.image(user_avatar, width = 30)
@@ -437,7 +427,7 @@ with st.popover("💬 Ask AI"):
             st.error(f'The prompt is too long. Max: {MAX_CHARA} characters')
         else:
             with chat:
-                st.chat_message("user", avatar = user_avatar if st.user.is_logged_in else "🐻").write(prompt)
+                st.chat_message("user", avatar = user_avatar if st.user and st.user.get("is_logged_in", False) else "🐻").write(prompt)
             st.session_state.messages.append({"role" : "user", "content": prompt})
 
             with st.spinner("The answer is coming!..."):
