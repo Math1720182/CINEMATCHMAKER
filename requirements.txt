@@ -8,3 +8,6 @@ bcrypt
 google-genai
 python-dotenv
 IPython
+google-auth
+gcsfs
+pyarrow
