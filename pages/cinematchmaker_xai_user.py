@@ -59,11 +59,12 @@ with st.spinner("Waiting for data loading...", show_time=True):
 
 #Google Cloud Call
 
-if "gcp_service_account" in st.secrets:
+gcp_key_env = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+
+if gcp_key_env:
+    info_key = json.loads(gcp_key_env)
+else:
     info_key = dict(st.secrets["gcp_service_account"])
-elif os.getenv("GCP_SERVICE_ACCOUNT_KEY"): #Railway
-    json_text = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
-    info_key = json.loads(json_text)
 
 key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
 
