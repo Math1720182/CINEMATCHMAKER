@@ -7,14 +7,37 @@ import numpy as np
 from sklearn.preprocessing import MaxAbsScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix
+import os
+from dotenv import load_dotenv
+import json
+from google.oauth2 import service_account
+import gcsfs
+
+
+#Google Cloud Call
+
+load_dotenv()
+
+info_key = dict(st.secrets["gcp_service_account"])
+
+key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
+
+fs = gcsfs.GCSFileSystem(
+    token=key_google
+)
+
+file_path_df_merged_scrapped = "gs://cinematchmaker/parquet/df_merged_scrapped.parquet"
+file_path_tags = "gs://cinematchmaker/parquet/tags.parquet"
+file_path_df_tags_tmdb = "gs://cinematchmaker/parquet/df_tags_tmdb.parquet"
+
 
 @st.cache_data(show_spinner=False)
 def load_and_transform():
 
     #Import data
-    df_movie = pd.read_csv("data/df_merged_scrapped.csv")
-    df_tags = pd.read_csv("data/tags.csv")
-    df_tags_tmdb = pd.read_csv("data/df_tags_tmdb.csv")
+    df_movie = pd.read_parquet(file_path_df_merged_scrapped,filesystem=fs)
+    df_tags = pd.read_parquet(file_path_tags,filesystem=fs)
+    df_tags_tmdb = pd.read_parquet(file_path_df_tags_tmdb,filesystem=fs)
 
     #1. Filter movies
     df_movie = df_movie[

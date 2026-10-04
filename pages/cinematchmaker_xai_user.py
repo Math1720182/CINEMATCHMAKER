@@ -9,6 +9,11 @@ import streamlit as st
 import streamlit.components.v1 as components
 from utils import load_and_transform
 import psycopg2
+import json
+from google.oauth2 import service_account
+import io
+from google.cloud import storage
+import gcsfs
 
 #region Title
 st.markdown("""
@@ -50,6 +55,27 @@ def get_transformed_data():
 
 with st.spinner("Waiting for data loading...", show_time=True):
     df, df_vector_2D = get_transformed_data()
+
+
+#Google Cloud Call
+
+load_dotenv()
+
+info_key = dict(st.secrets["gcp_service_account"])
+
+key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
+
+fs = gcsfs.GCSFileSystem(
+    token=key_google
+)
+
+file_path_ratings_augmented = "gs://cinematchmaker/parquet/ratings_augmented.parquet"
+
+#For embedded matrice 
+client = storage.Client(credentials=key_google)
+bucket = client.bucket("cinematchmaker")
+blob = bucket.blob("movie_embeddings.npy")
+file_in_memory = io.BytesIO(blob.download_as_bytes())
 
 
 #API KEY AND URL_DATABASE
@@ -124,8 +150,8 @@ def find_user_id(username = None, google_sub = None):
 
 @st.cache_data
 def load_model_and_data():
-    df_ratings = pd.read_csv("data/ratings_augmented.csv")
-    movie_embeddings = np.load("data/movie_embeddings.npy")
+    df_ratings = pd.read_parquet(file_path_ratings_augmented,filesystem=fs)
+    movie_embeddings = np.load(file_in_memory)
     return df_ratings, movie_embeddings
 
 def find_movie(user_id, url_database):
