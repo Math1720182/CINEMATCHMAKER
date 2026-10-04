@@ -69,7 +69,8 @@ else:
 key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
 
 fs = gcsfs.GCSFileSystem(
-    token=key_google
+    token=key_google,
+    default_fill_target=0
 )
 
 file_path_ratings_augmented = "gs://cinematchmaker/parquet/ratings_augmented.parquet"
