@@ -16,7 +16,11 @@ import gcsfs
 
 #Google Cloud Call
 
-load_dotenv()
+if "gcp_service_account" in st.secrets:
+    info_key = dict(st.secrets["gcp_service_account"])
+elif os.getenv("GCP_SERVICE_ACCOUNT_KEY"): #Railway
+    json_text = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+    info_key = json.loads(json_text)
 
 info_key = dict(st.secrets["gcp_service_account"])
 
