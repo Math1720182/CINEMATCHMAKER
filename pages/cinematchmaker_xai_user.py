@@ -14,6 +14,10 @@ from google.oauth2 import service_account
 import io
 from google.cloud import storage
 import gcsfs
+import pyarrow as pa
+
+pa.set_cpu_count(2)
+pa.set_io_thread_count(2)
 
 #region Title
 st.markdown("""

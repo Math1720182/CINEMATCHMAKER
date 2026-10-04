@@ -12,7 +12,10 @@ from dotenv import load_dotenv
 import json
 from google.oauth2 import service_account
 import gcsfs
+import pyarrow as pa
 
+pa.set_cpu_count(2)
+pa.set_io_thread_count(2)
 
 #Google Cloud Call
 
