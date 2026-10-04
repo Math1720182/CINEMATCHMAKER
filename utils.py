@@ -22,8 +22,6 @@ elif os.getenv("GCP_SERVICE_ACCOUNT_KEY"): #Railway
     json_text = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
     info_key = json.loads(json_text)
 
-info_key = dict(st.secrets["gcp_service_account"])
-
 key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
 
 fs = gcsfs.GCSFileSystem(
