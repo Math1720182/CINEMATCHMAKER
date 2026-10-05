@@ -7,7 +7,6 @@ import requests
 from dotenv import load_dotenv
 import streamlit as st
 import streamlit.components.v1 as components
-from utils import load_and_transform
 from google.oauth2 import service_account
 import io
 from google.cloud import storage
