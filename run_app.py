@@ -469,7 +469,7 @@ with st.sidebar:
 
     <div class="sidebar-footer">
         <p><strong>Made with ❤️ by Thomas</strong></p>
-        <a href="https://github.com/Math1720182/MathSim/"
+        <a href="https://github.com/Math1720182/CINEMATCHMAKER/"
            target="_blank" rel="noopener noreferrer">
             Code on GitHub 👾
         </a>
