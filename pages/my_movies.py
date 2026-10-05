@@ -76,9 +76,9 @@ def find_user_id(username = None, google_sub = None):
     conn.close()
     return user[0] if user else None
 
-if st.user.is_logged_in:
+if st.user and st.user.get("is_logged_in", False):
     user_id = find_user_id(google_sub=st.user["sub"])
-else:
+elif st.session_state.get("user") is not None:
     user_id = find_user_id(username=st.session_state["user"]["username"])
 
 

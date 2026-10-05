@@ -174,13 +174,9 @@ try:
 except:
     URL_DATABASE = os.getenv("URL_DATABASE_LOCAL")
 
-if st.user and st.user.get("is_logged_in", False) and st.session_state["user"] is None:
-    st.session_state["user"] = st.user
-    st.rerun()
 
 if st.user and st.user.get("is_logged_in", False):
     user_id = find_user_id(google_sub=st.user["sub"])
-
 elif st.session_state.get("user") is not None:
     user_id = find_user_id(username=st.session_state["user"]["username"])
 
