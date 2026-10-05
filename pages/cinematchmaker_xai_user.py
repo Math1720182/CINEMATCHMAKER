@@ -154,9 +154,8 @@ def find_user_id(username = None, google_sub = None):
 
 @st.cache_data
 def load_model_and_data():
-    df_ratings = pd.read_parquet(file_path_ratings_augmented,filesystem=fs)
     movie_embeddings = np.load(file_in_memory)
-    return df_ratings, movie_embeddings
+    return movie_embeddings
 
 def find_movie(user_id, url_database):
     conn = psycopg2.connect(url_database)
@@ -168,7 +167,7 @@ def find_movie(user_id, url_database):
     return movies
 
 with st.spinner("We made your personnal recommendation..."):
-    df_ratings, movie_embeddings = load_model_and_data()
+    movie_embeddings = load_model_and_data()
 
 try:
     URL_DATABASE = st.secrets['URL_DATABASE_RAILWAY']
@@ -249,12 +248,9 @@ if len(movies_user) >= 4:
                 movie_vectors = movie_embeddings[watched_movie_ids]
 
                 user_profile_vector = weights @ movie_vectors 
-
-                norme = np.linalg.norm(user_profile_vector)
-                if norme > 0:
-                    user_profile_vector = user_profile_vector / norme
-
-                similarities = (movie_embeddings @ user_profile_vector.T).ravel()
+                user_profile_vector = np.asarray(user_profile_vector).reshape(1, -1)
+                
+                similarities = cosine_similarity(user_profile_vector, movie_embeddings)[0]
 
                 for idx in watched_movie_ids:
                     similarities[idx] = -np.inf
