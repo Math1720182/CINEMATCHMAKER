@@ -2,7 +2,6 @@ import os
 import streamlit as st
 from IPython.display import Image
 import requests
-from utils import load_and_transform
 from dotenv import load_dotenv
 from datetime import date
 import psycopg2

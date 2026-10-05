@@ -7,7 +7,6 @@ import requests
 from dotenv import load_dotenv
 import streamlit as st
 import streamlit.components.v1 as components
-from utils import load_and_transform
 import psycopg2
 import json
 from google.oauth2 import service_account
@@ -74,7 +73,7 @@ file_in_memory = io.BytesIO(blob.download_as_bytes())
 
 @st.cache_data(show_spinner=False)
 def load_and_transform():
-    
+
     df = pd.read_parquet("gs://cinematchmaker/load_and_transform/df_from_load_and_transform.parquet",filesystem=fs,)
 
     df_vector_2D = load_npz(fs.open("gs://cinematchmaker/load_and_transform/df_vector_2D_from_load_and_transform.npz"))
