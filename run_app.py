@@ -252,12 +252,6 @@ user_avatar = get_user_avatar()
 if st.user and st.user.get("is_logged_in", False):
     login_with_google(st.user['sub'])
 
-#Creating .secrets file because st.login search about a file not railway variables
-secrets_path = Path(".streamlit/secrets.toml")
-if not secrets_path.exists() and "STREAMLIT_SECRETS_TOML" in os.environ:
-    secrets_path.parent.mkdir(parents=True, exist_ok=True)
-    secrets_path.write_text(os.environ["STREAMLIT_SECRETS_TOML"])
-
 @st.dialog("Log in or sign up", width="small")
 def login_page():
 
