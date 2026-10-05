@@ -1,11 +1,4 @@
 import os
-
-os.environ["OMP_NUM_THREADS"] = "2"
-os.environ["MKL_NUM_THREADS"] = "2"
-os.environ["OPENBLAS_NUM_THREADS"] = "2"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
-os.environ["NUMEXPR_NUM_THREADS"] = "2"
-
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity

@@ -3,13 +3,6 @@
 
 
 import os
-
-os.environ["OMP_NUM_THREADS"] = "2"
-os.environ["MKL_NUM_THREADS"] = "2"
-os.environ["OPENBLAS_NUM_THREADS"] = "2"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
-os.environ["NUMEXPR_NUM_THREADS"] = "2"
-
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -22,8 +15,6 @@ from google.oauth2 import service_account
 import gcsfs
 import pyarrow as pa
 
-pa.set_cpu_count(2)
-pa.set_io_thread_count(2)
 
 #Google Cloud Call
 

@@ -1,11 +1,4 @@
 import os
-
-os.environ["OMP_NUM_THREADS"] = "2"
-os.environ["MKL_NUM_THREADS"] = "2"
-os.environ["OPENBLAS_NUM_THREADS"] = "2"
-os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
-os.environ["NUMEXPR_NUM_THREADS"] = "2"
-
 import pandas as pd
 import numpy as np
 from sklearn.metrics.pairwise import cosine_similarity
@@ -22,9 +15,6 @@ import io
 from google.cloud import storage
 import gcsfs
 import pyarrow as pa
-
-pa.set_cpu_count(2)
-pa.set_io_thread_count(2)
 
 #region Title
 st.markdown("""
