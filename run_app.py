@@ -252,6 +252,13 @@ user_avatar = get_user_avatar()
 if st.user and st.user.get("is_logged_in", False):
     login_with_google(st.user['sub'])
 
+if "auth" not in st.secrets:
+    st.error("La section [auth] est introuvable dans st.secrets !")
+elif "google" not in st.secrets["auth"]:
+    st.error("La section [auth.google] est introuvable dans st.secrets !")
+else:
+    st.success("La configuration OAuth Google est bien chargée !")
+
 @st.dialog("Log in or sign up", width="small")
 def login_page():
 
