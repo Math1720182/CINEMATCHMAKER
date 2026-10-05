@@ -333,8 +333,8 @@ with st.sidebar:
         if not st.user and st.user.get("is_logged_in", False):
             st.write(f"Welcome **{st.session_state["user"]["username"]}**")
         else:
-            st.image(user_avatar, width = 30)
-            st.write(f"Welcome **{st.user['name']}**")
+            st.write(user_avatar)
+            st.write(f"Welcome **{st.session_state["user"]["username"]}**")
     
         if st.button("Sign-out"):
             st.logout()

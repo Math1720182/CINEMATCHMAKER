@@ -161,7 +161,7 @@ def load_model_and_data():
 def find_movie(user_id, url_database):
     conn = psycopg2.connect(url_database)
     cur = conn.cursor()
-    cur.execute("SELECT tmdb_id, note, date_added FROM user_movies WHERE user_id = %s;", (str(user_id,)))
+    cur.execute("SELECT tmdb_id, note, date_added FROM user_movies WHERE user_id = %s;", (str(user_id),))
     movies = cur.fetchall()
     cur.close()
     conn.close()

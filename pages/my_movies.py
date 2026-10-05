@@ -112,7 +112,7 @@ def find_movie(user_id):
     FROM user_movies
     WHERE user_id = %s;
     """,
-    (str(user_id,)),
+    (str(user_id),),
     )
 
     movies = cur.fetchall()
