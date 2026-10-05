@@ -6,14 +6,44 @@ from utils import load_and_transform
 from dotenv import load_dotenv
 from datetime import date
 import psycopg2
+import json
+from google.oauth2 import service_account
+import io
+from google.cloud import storage
+import gcsfs
+import pyarrow as pa
+from scipy.sparse import load_npz
 
 
 st.title("My movies", text_alignment = "center", help = "**Select your favorite movies to personalize your recommendations!**")
 st.space()
 
 
-#Load and transform
+#Step 1: Load and transform
+
+gcp_key_env = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+
+if gcp_key_env:
+    info_key = json.loads(gcp_key_env)
+else:
+    info_key = dict(st.secrets["gcp_service_account"])
+
+key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
+
+fs = gcsfs.GCSFileSystem(token=key_google,default_fill_target=0)
+
+
+@st.cache_data(show_spinner=False)
+def load_and_transform():
+    
+    df = pd.read_parquet("gs://cinematchmaker/load_and_transform/df_from_load_and_transform.parquet",filesystem=fs,)
+
+    df_vector_2D = load_npz(fs.open("gs://cinematchmaker/load_and_transform/df_vector_2D_from_load_and_transform.npz"))
+
+    return df, df_vector_2D
+
 df, df_vector_2D = load_and_transform()
+
 
 #API KEY AND URL_DATABASE
 load_dotenv()
@@ -65,7 +95,7 @@ def add_movie(user_id, tmdbID, note, date):
     ON CONFLICT (user_id, tmdb_id)
     DO UPDATE SET note = EXCLUDED.note;
         """,
-        (user_id, tmdbID, note, date)
+        (str(user_id), int(tmdbID), note, date)
     )
 
     conn.commit()
@@ -104,7 +134,7 @@ def delete_movie(user_id, tmdb_id):
         DELETE FROM user_movies
         WHERE user_id = %s AND tmdb_id = %s;
         """,
-        (user_id, int(tmdb_id)),
+        (str(user_id), str(tmdb_id)),
     )
 
     conn.commit()

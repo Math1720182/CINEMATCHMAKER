@@ -8,6 +8,13 @@ from dotenv import load_dotenv
 import streamlit as st
 import streamlit.components.v1 as components
 from utils import load_and_transform
+from google.oauth2 import service_account
+import io
+from google.cloud import storage
+import gcsfs
+import pyarrow as pa
+from scipy.sparse import load_npz
+import json
 
 #region Title
 st.markdown("""
@@ -43,8 +50,28 @@ st.markdown("""
 
 #Step 1: Load and transform
 
-with st.spinner("Waiting for data loading...", show_time = True):
-    df, df_vector_2D = load_and_transform()
+gcp_key_env = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+
+if gcp_key_env:
+    info_key = json.loads(gcp_key_env)
+else:
+    info_key = dict(st.secrets["gcp_service_account"])
+
+key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
+
+fs = gcsfs.GCSFileSystem(token=key_google,default_fill_target=0)
+
+
+@st.cache_data(show_spinner=False)
+def load_and_transform():
+    
+    df = pd.read_parquet("gs://cinematchmaker/load_and_transform/df_from_load_and_transform.parquet",filesystem=fs,)
+
+    df_vector_2D = load_npz(fs.open("gs://cinematchmaker/load_and_transform/df_vector_2D_from_load_and_transform.npz"))
+
+    return df, df_vector_2D
+
+df, df_vector_2D = load_and_transform()
 
 
 #API KEY AND URL_DATABASE

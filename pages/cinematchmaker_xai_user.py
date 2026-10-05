@@ -15,6 +15,7 @@ import io
 from google.cloud import storage
 import gcsfs
 import pyarrow as pa
+from scipy.sparse import load_npz
 
 #region Title
 st.markdown("""
@@ -48,16 +49,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 #endregion
 
-#Step 1: Load and transform
-
-@st.cache_data(show_spinner=False)
-def get_transformed_data():
-    return load_and_transform()
-
-with st.spinner("Waiting for data loading...", show_time=True):
-    df, df_vector_2D = get_transformed_data()
-
-
 #Google Cloud Call
 
 gcp_key_env = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
@@ -69,12 +60,10 @@ else:
 
 key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
 
-fs = gcsfs.GCSFileSystem(
-    token=key_google,
-    default_fill_target=0
-)
+fs = gcsfs.GCSFileSystem(token=key_google,default_fill_target=0)
 
 file_path_ratings_augmented = "gs://cinematchmaker/parquet/ratings_augmented.parquet"
+
 
 #For embedded matrice 
 client = storage.Client(credentials=key_google)
@@ -82,6 +71,17 @@ bucket = client.bucket("cinematchmaker")
 blob = bucket.blob("movie_embeddings.npy")
 file_in_memory = io.BytesIO(blob.download_as_bytes())
 
+
+@st.cache_data(show_spinner=False)
+def load_and_transform():
+    
+    df = pd.read_parquet("gs://cinematchmaker/load_and_transform/df_from_load_and_transform.parquet",filesystem=fs,)
+
+    df_vector_2D = load_npz(fs.open("gs://cinematchmaker/load_and_transform/df_vector_2D_from_load_and_transform.npz"))
+
+    return df, df_vector_2D
+
+df, df_vector_2D = load_and_transform()
 
 #API KEY AND URL_DATABASE
 load_dotenv()
