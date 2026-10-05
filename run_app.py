@@ -12,19 +12,6 @@ from pathlib import Path
 
 st.set_page_config(layout="wide", page_icon = "🍿", initial_sidebar_state = "expanded")
 
-toml_content = os.environ.get("STREAMLIT_SECRETS_TOML")
-
-if toml_content:
-    # Chemins absolus recherchés par Streamlit sur le serveur
-    paths = [
-        Path("/app/.streamlit/secrets.toml"),
-        Path("/root/.streamlit/secrets.toml"),
-    ]
-    
-    for p in paths:
-        p.parent.mkdir(parents=True, exist_ok=True)
-        p.write_text(toml_content)
-
 #region Personnalisation
 #Css to perso homepage
 st.markdown("""
