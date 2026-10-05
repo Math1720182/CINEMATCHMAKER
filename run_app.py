@@ -1,9 +1,16 @@
+import os
+
+os.environ["OMP_NUM_THREADS"] = "2"
+os.environ["MKL_NUM_THREADS"] = "2"
+os.environ["OPENBLAS_NUM_THREADS"] = "2"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
+os.environ["NUMEXPR_NUM_THREADS"] = "2"
+
 import streamlit as st
 import bcrypt
 import psycopg2
 from google import genai
 from dotenv import load_dotenv
-import os
 from datetime import datetime, timedelta
 import time
 import requests

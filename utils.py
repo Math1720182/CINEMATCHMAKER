@@ -1,13 +1,21 @@
 
 #----------LOAD AND TRANSFORM--------------
 
+
+import os
+
+os.environ["OMP_NUM_THREADS"] = "2"
+os.environ["MKL_NUM_THREADS"] = "2"
+os.environ["OPENBLAS_NUM_THREADS"] = "2"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
+os.environ["NUMEXPR_NUM_THREADS"] = "2"
+
 import streamlit as st
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import MaxAbsScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from scipy.sparse import csr_matrix
-import os
 from dotenv import load_dotenv
 import json
 from google.oauth2 import service_account

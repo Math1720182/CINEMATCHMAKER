@@ -1,5 +1,12 @@
-import streamlit as st
 import os
+
+os.environ["OMP_NUM_THREADS"] = "2"
+os.environ["MKL_NUM_THREADS"] = "2"
+os.environ["OPENBLAS_NUM_THREADS"] = "2"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "2"
+os.environ["NUMEXPR_NUM_THREADS"] = "2"
+
+import streamlit as st
 from IPython.display import Image
 import requests
 from utils import load_and_transform
