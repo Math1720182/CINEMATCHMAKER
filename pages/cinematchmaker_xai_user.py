@@ -209,15 +209,13 @@ if len(movies_user) >= 4:
 
             movies = movies_user
 
-            df_temp = df.copy()
-            df_temp["tmdbId_str"] = df_temp["tmdbId"].astype(str)
 
             for item in movies:
                 tmdb_id_str = str(item[0])
                 tmdb_id = int(item[0])
                 note = item[1]
 
-                film_filtre = df_temp[df_temp["tmdbId_str"] == tmdb_id_str]
+                film_filtre = df[df["tmdbId"] == tmdb_id]
 
                 if not film_filtre.empty and pd.notna(film_filtre.iloc[0]["movie_idx"]):
                     idx = film_filtre.iloc[0]["movie_idx"]
@@ -251,9 +249,12 @@ if len(movies_user) >= 4:
                 movie_vectors = movie_embeddings[watched_movie_ids]
 
                 user_profile_vector = weights @ movie_vectors 
-                user_profile_vector = np.asarray(user_profile_vector).reshape(1, -1)
-                
-                similarities = cosine_similarity(user_profile_vector, movie_embeddings)[0]
+
+                norme = np.linalg.norm(user_profile_vector)
+                if norme > 0:
+                    user_profile_vector = user_profile_vector / norme
+
+                similarities = (movie_embeddings @ user_profile_vector.T).ravel()
 
                 for idx in watched_movie_ids:
                     similarities[idx] = -np.inf
@@ -271,7 +272,6 @@ if len(movies_user) >= 4:
                 if "movie_index_user" not in st.session_state:
                     st.session_state["movie_index_user"] = 0
                 
-                # Une fois le calcul fait, on remet le flag d'ajout à False
                 st.session_state["movie_added"] = False
 
 else:
