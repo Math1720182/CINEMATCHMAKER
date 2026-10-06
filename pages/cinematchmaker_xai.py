@@ -56,7 +56,7 @@ if gcp_key_env:
 else:
     info_key = dict(st.secrets["gcp_service_account"])
 
-key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
+key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_only"])
 
 fs = gcsfs.GCSFileSystem(token=key_google,default_fill_target=0)
 

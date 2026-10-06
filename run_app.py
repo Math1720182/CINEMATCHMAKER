@@ -9,8 +9,40 @@ import time
 import requests
 import uuid
 from pathlib import Path
+from google.cloud import storage
+from google.oauth2 import service_account
+import gcsfs
+import json
 
 st.set_page_config(layout="wide", page_icon = "🍿", initial_sidebar_state = "expanded")
+
+def load_secrets_from_gcs():
+
+    gcp_key_env = os.getenv("GCP_SERVICE_ACCOUNT_KEY")
+
+    if gcp_key_env:
+        info_key = json.loads(gcp_key_env)
+    elif "gcp_service_account" in st.secrets:
+        info_key = dict(st.secrets["gcp_service_account"])
+    else:
+        return
+
+    key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_only"])
+
+    fs = gcsfs.GCSFileSystem(token=key_google, default_fill_target=0)
+    
+    remote_path = "cinematchmaker/secrets.toml" 
+    
+    local_dir = ".streamlit"
+    local_path = os.path.join(local_dir, "secrets.toml")
+
+    os.makedirs(local_dir, exist_ok=True)
+
+    if fs.exists(remote_path):
+        fs.get(remote_path, local_path)
+
+load_secrets_from_gcs()
+
 
 #region Personnalisation
 #Css to perso homepage
