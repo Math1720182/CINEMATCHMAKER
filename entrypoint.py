@@ -25,8 +25,13 @@ with open(".streamlit/secrets.toml", "w") as f:
 
 port = os.environ.get("PORT", "8501")
 
-subprocess.run([
-    "streamlit", "run", "run_app.py",
+import sys
+
+cmd = [
+    sys.executable, "-m", "streamlit", "run", "run_app.py",
     "--server.address=0.0.0.0",
-    f"--server.port={port}"
-])
+    f"--server.port={port}",
+    "--server.headless=true"
+]
+
+subprocess.run(cmd)
