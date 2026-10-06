@@ -12,9 +12,6 @@ from pathlib import Path
 
 st.set_page_config(layout="wide", page_icon = "🍿", initial_sidebar_state = "expanded")
 
-st.space()
-st.write("Auth secrets détectés :", st.secrets.get("auth", "Section [auth] absente"))
-
 #region Personnalisation
 #Css to perso homepage
 st.markdown("""
