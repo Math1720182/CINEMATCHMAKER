@@ -1,4 +1,5 @@
 import os
+import subprocess
 
 os.makedirs(".streamlit", exist_ok=True)
 
@@ -22,4 +23,4 @@ server_metadata_url = "{server_metadata_url}"
 with open(".streamlit/secrets.toml", "w") as f:
     f.write(secrets_content)
 
-os.system("streamlit run run_app.py")
+subprocess.run(["streamlit", "run", "run_app.py"])
