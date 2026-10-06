@@ -27,7 +27,7 @@ def load_secrets_from_gcs():
     else:
         return
 
-    key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_only"])
+    key_google = (service_account.Credentials.from_service_account_info(info_key)).with_scopes(["https://www.googleapis.com/auth/devstorage.read_write"])
 
     fs = gcsfs.GCSFileSystem(token=key_google, default_fill_target=0)
     
@@ -360,18 +360,24 @@ if st.user and st.user.get("is_logged_in", False) and st.session_state["user"] i
             
 with st.sidebar:
     if st.session_state["user"] is None:
-        if st.button("**Log in**", type = 'primary', key = "sign_in", width = 300):
+        if st.button("**Log in**", type="primary", key="sign_in", width=300):
             login_page()
     else:
-        if not st.user and st.user.get("is_logged_in", False):
-            st.write(f"Welcome **{st.session_state["user"]["username"]}**")
+        if st.user and st.user.get("is_logged_in", False):
+            username = st.session_state["user"].get("name", "User")
+            if user_avatar:
+                st.image(user_avatar, width=40)
         else:
-            st.write(user_avatar)
-            st.write(f"Welcome **{st.session_state["user"]["username"]}**")
-    
+            username = st.session_state["user"].get("username", "User")
+
+        st.write(f"Welcome **{username}**")
+
         if st.button("Sign-out"):
-            st.logout()
+            if st.user and st.user.get("is_logged_in", False):
+                st.logout()
+
             st.session_state.clear()
+            st.rerun()
 
     st.caption("Menu")
     for page in pages["Cine MatchMaker"]:
