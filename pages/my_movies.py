@@ -166,6 +166,7 @@ if "tmdbID_dico" not in st.session_state:
 if "movie_added" not in st.session_state:
     st.session_state["movie_added"] = False
 
+
 #Select movies
 col1, col2, col3, col4 = st.columns(4, vertical_alignment="center")
 
@@ -187,15 +188,18 @@ with col4:
     st.write("")
     st.write("")
     if st.button("Add the movie"):
-            tmdbID = int(df_filtre[df_filtre['title'] == movie_user]['tmdbId'].iloc[0])
-            add_movie(user_id, tmdbID, note, date.today())
-            if "user_movies" in st.session_state:
-                st.session_state["user_movies"].append((tmdbID, note, date.today()))
+            if st.session_state["selected_movie"] != None:
+                tmdbID = int(df_filtre[df_filtre['title'] == movie_user]['tmdbId'].iloc[0])
+                add_movie(user_id, tmdbID, note, date.today())
+                if "user_movies" in st.session_state:
+                    st.session_state["user_movies"].append((tmdbID, note, date.today()))
 
-            st.session_state["movie_added"] = True
-            st.session_state["df_sorted_user"] = None
-            st.session_state["movie_index_user"] = 0
-            st.rerun()
+                st.session_state["movie_added"] = True
+                st.session_state["df_sorted_user"] = None
+                st.session_state["movie_index_user"] = 0
+                st.rerun()
+            else:
+                st.warning("No movies find with this title. Please try again.")
 
 
 for item in movies:
