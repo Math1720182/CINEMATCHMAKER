@@ -96,7 +96,6 @@ if not api_key:
     st.stop()
 
 parameters = {"api_key": api_key}
-
 @st.cache_data
 def get_trending_movies(api_key, parameters):
     URL = "https://api.themoviedb.org/3/trending/all/week"
@@ -105,7 +104,7 @@ def get_trending_movies(api_key, parameters):
     reponse = requests.get(URL, params = parameters)
     return reponse.json(), URL_base_image
 
-trend, URL_base_image = get_trending_movies(st.session_state.api_key, parameters)
+trend, URL_base_image = get_trending_movies(api_key, parameters)
 
 st.markdown("### Trending movies")
 
@@ -131,8 +130,6 @@ st.header("Your recommendation", text_alignment = "center")
 if "movie_index_user" not in st.session_state:
     st.session_state["movie_index_user"] = 1
 
-if "API_KEY" not in st.session_state:
-    st.session_state.api_key = None
 
 #Min in hour function
 def min_in_hour(movie_duration):
