@@ -112,18 +112,18 @@ Given a user’s logged ratings $\{r_1, r_2, \dots, r_k\}$ for movies $\{i_1, i_
 1. **Center Ratings (Weight Assignment):**
 Ratings are normalized around a baseline score of $3.0$:
     
-    $$
-    w_k = r_k - 3.0
-    $$
+$$
+w_k = r_k - 3.0
+$$
     
     - A rating of $5.0$ yields a positive weight $+2.0$.
     - A rating of $1.0$ yields a negative weight $-2.0$.
 2. **User Profile Matrix Multiplication:**
 Let $W \in \mathbb{R}^{1 \times k}$ be the row vector of user weights, and $V_{watched} \in \mathbb{R}^{k \times 64}$ be the embedding matrix of the $k$ watched movies:
     
-    $$
-    U_{profile} = W \cdot V_{watched} = \sum_{j=1}^{k} w_j \mathbf{e}_{i_j}
-    $$
+$$
+U_{profile} = W \cdot V_{watched} = \sum_{j=1}^{k} w_j \mathbf{e}_{i_j}
+$$
     
     Where $U_{profile} \in \mathbb{R}^{1 \times 64}$ represents the aggregated user preference in latent vector space.
     
