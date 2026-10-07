@@ -92,10 +92,11 @@ else:
     api_key = os.getenv("API_KEY_TMDB")
 
 if not api_key:
-    st.error("La clé API TMDB est introuvable sur le serveur Railway.")
+    st.error("API key not found on Railway.")
     st.stop()
 
 parameters = {"api_key": api_key}
+
 @st.cache_data
 def get_trending_movies(api_key, parameters):
     URL = "https://api.themoviedb.org/3/trending/all/week"
