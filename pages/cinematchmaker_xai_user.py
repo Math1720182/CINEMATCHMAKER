@@ -84,13 +84,18 @@ df, df_vector_2D = load_and_transform()
 
 #API KEY AND URL_DATABASE
 load_dotenv()
-try:
-    if "API_KEY_TMDB" in st.secrets:
-        st.session_state.api_key = st.secrets["API_KEY_TMDB"]
-except:
-    st.session_state.api_key = os.getenv("API_KEY_TMDB")
+api_key = None
 
-parameters = {"api_key": st.session_state.api_key}
+if "API_KEY_TMDB" in st.secrets:
+    api_key = st.secrets["API_KEY_TMDB"]
+else:
+    api_key = os.getenv("API_KEY_TMDB")
+
+if not api_key:
+    st.error("La clé API TMDB est introuvable sur le serveur Railway.")
+    st.stop()
+
+parameters = {"api_key": api_key}
 
 @st.cache_data
 def get_trending_movies(api_key, parameters):
