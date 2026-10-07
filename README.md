@@ -110,37 +110,37 @@ At inference time in Streamlit, rather than running a full forward pass through 
 Given a user’s logged ratings $\{r_1, r_2, \dots, r_k\}$ for movies $\{i_1, i_2, \dots, i_k\}$:
 
 1. **Center Ratings (Weight Assignment):**
-Ratings are normalized around a baseline score of $3.0$:
-    
-    $$
-    w_k = r_k - 3.0
-    $$
-    
-    - A rating of $5.0$ yields a positive weight $+2.0$.
-    - A rating of $1.0$ yields a negative weight $-2.0$.
+   Ratings are normalized around a baseline score of $3.0$:
+
+$$
+w_k = r_k - 3.0
+$$
+
+   - A rating of $5.0$ yields a positive weight $+2.0$.
+   - A rating of $1.0$ yields a negative weight $-2.0$.
+
 2. **User Profile Matrix Multiplication:**
-Let $W \in \mathbb{R}^{1 \times k}$ be the row vector of user weights, and $V_{watched} \in \mathbb{R}^{k \times 64}$ be the embedding matrix of the $k$ watched movies:
-    
-    $$
-    U_{profile} = W \cdot V_{watched} = \sum_{j=1}^{k} w_j \mathbf{e}_{i_j}
-    $$
-    
-    Where $U_{profile} \in \mathbb{R}^{1 \times 64}$ represents the aggregated user preference in latent vector space.
-    
+   Let $W \in \mathbb{R}^{1 \times k}$ be the row vector of user weights, and $V_{watched} \in \mathbb{R}^{k \times 64}$ be the embedding matrix of the $k$ watched movies:
+
+$$
+U_{profile} = W \cdot V_{watched} = \sum_{j=1}^{k} w_j \mathbf{e}_{i_j}
+$$
+
+   Where $U_{profile} \in \mathbb{R}^{1 \times 64}$ represents the aggregated user preference in latent vector space.
+
 3. **Cosine Similarity Match against Catalog:**
-I compute the Cosine Similarity between the user vector $U_{profile}$ and all candidate movie embeddings $V_i \in V$:
-    
-    $$
-    \text{Sim}(U_{profile}, V_i) = \frac{U_{profile} \cdot V_i^\top}{\|U_{profile}\|_2 \|V_i\|_2}
-    $$
-    
+   I compute the Cosine Similarity between the user vector $U_{profile}$ and all candidate movie embeddings $V_i \in V$:
+
+$$
+\text{Sim}(U_{profile}, V_i) = \frac{U_{profile} \cdot V_i^\top}{\|U_{profile}\|_2 \|V_i\|_2}
+$$
+
 4. **Filtering and Ranking:**
-Previously watched movie indices are set to $-\infty$ so they are omitted, and the catalog is ranked by descending similarity score:
-    
-    $$
-    \text{Top Movies} = \operatorname{argsort}\left(\text{Sim}(U_{profile}, V)\right)[::-1]
-    $$
-    
+   Previously watched movie indices are set to $-\infty$ so they are omitted, and the catalog is ranked by descending similarity score:
+
+$$
+\text{Top Movies} = \text{argsort}\left(\text{Sim}(U_{profile}, V)\right)[::-1]
+$$
 
 ---
 
@@ -163,9 +163,9 @@ When a user interacts with or rates a movie $m_{new}$ that was not present in th
 1. **Genre Feature Filtering:** Filter the reference catalog by matching genre criteria.
 2. **Feature Cosine Similarity:** Compute cosine similarity over the high-dimensional feature representations ($D$) between the new movie vector $\mathbf{v}_{new}$ and catalog movie vectors $\mathbf{v}_c$:
     
-    $$
-    \text{Sim}_{\text{content}}(\mathbf{v}_{new}, \mathbf{v}_c) = \frac{\mathbf{v}_{new} \cdot \mathbf{v}_c^\top}{\|\mathbf{v}_{new}\|_2 \|\mathbf{v}_c\|_2}
-    $$
+$$
+\text{Sim}_{\text{content}}(\mathbf{v}_{new}, \mathbf{v}_c) = \frac{\mathbf{v}_{new} \cdot \mathbf{v}_c^\top}{\|\mathbf{v}_{new}\|_2 \|\mathbf{v}_c\|_2}
+$$
     
 3. **Embedding Substitution:** Select the nearest catalog neighbor index $i_{nearest} = \arg\max (\text{Sim}_{\text{content}})$ and substitute its learned embedding vector $E_{i_{nearest}}$ into the user profiling matrix calculation.
 
